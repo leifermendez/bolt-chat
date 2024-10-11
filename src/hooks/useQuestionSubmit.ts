@@ -1,55 +1,57 @@
-import { useState } from 'react';
-
-interface QuestionResponse {
-    success: boolean;
-    answer: string;
-}
-
+import { useState, useCallback } from 'react';
+import { API_URL } from '../config';
+/**
+ * Hook for submitting questions and handling responses.
+ * @returns {Object} An object containing loading state, error state, partial response, and methods for submitting questions.
+ */
 const useQuestionSubmit = () => {
     const [loading, setLoading] = useState<boolean>(false);
     const [error, setError] = useState<string | null>(null);
+    const [question, setQuestion] = useState<string>('');
+    const [partialResponse, setPartialResponse] = useState<string>('');
+    const [endedResponse, setEndedResponse] = useState<boolean>(false);
 
-    /**
-     * Envía una pregunta al servidor y devuelve la respuesta.
-     * @param {string} question - La pregunta a enviar.
-     * @returns {Promise<string>} - La respuesta del servidor o un mensaje de error.
-     * @throws {Error} - Lanza un error si la solicitud falla o si la respuesta no es exitosa.
-     */
-    const submitQuestion = async (question: string): Promise<string> => {
+    const submitQuestion = useCallback((question: string): Promise<void> => {
         setLoading(true);
         setError(null);
+        setPartialResponse('');
+        setEndedResponse(false);
+        setQuestion(question);
 
-        try {
-            const response = await fetch('http://localhost:3000/api/question', {
-                method: 'POST',
-                headers: {
-                    'accept': 'application/json',
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify({ question }),
+        return new Promise<void>((resolve) => {
+            // Updated URL to match the new API format
+            const eventSource = new EventSource(`${API_URL}/question/stream?question=${encodeURIComponent(question)}`);
+
+            eventSource.onmessage = (event) => {
+                const data = JSON.parse(event.data);
+                console.log('Datos recibidos:', data);
+                if (data?.token) {
+                    setPartialResponse((prev) => prev + data.token);
+                }
+                if (data?.type && data.type === 'end') {
+                    setEndedResponse(true);
+                    resolve();
+                }
+            };
+
+            eventSource.onerror = () => {
+                eventSource.close();
+            };
+
+            eventSource.onopen = () => {
+                console.log('Conexión SSE abierta');
+            };
+
+            eventSource.addEventListener('done', () => {
+                console.log('Transmisión SSE completada');
+                setLoading(false);
+                eventSource.close();
+                resolve();
             });
+        });
+    }, []);
 
-            if (!response.ok) {
-                throw new Error('Error en la solicitud');
-            }
-
-            const data: QuestionResponse = await response.json();
-            if (data.success) {
-                return data.answer;
-            } else {
-                throw new Error('Respuesta no exitosa');
-            }
-        } catch (error) {
-            const errorMessage = error instanceof Error ? error.message : 'Error desconocido';
-            setError(errorMessage);
-            console.error('Error al enviar la pregunta:', errorMessage);
-            return 'Lo siento, hubo un error al procesar tu pregunta.';
-        } finally {
-            setLoading(false);
-        }
-    };
-
-    return { submitQuestion, loading, error };
+    return { submitQuestion, loading, error, partialResponse, endedResponse, question };
 };
 
 export default useQuestionSubmit;

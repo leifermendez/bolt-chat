@@ -1,14 +1,19 @@
 import React, { createContext, useContext, useState, ReactNode } from 'react';
 
+interface Message {
+    role: 'user' | 'assistant';
+    content: string;
+}
+
 /**
  * Contexto para manejar la conversación, incluyendo preguntas y mensajes.
  * @interface ConversationContextType
  */
 interface ConversationContextType {
+    messages: Message[];
+    addMessage: (role: 'user' | 'assistant', content: string) => void;
     questions: string[];
-    messages: { role: string; content: string }[];
-    addMessage: (role: string, content: string) => void;
-    setQuestions: React.Dispatch<React.SetStateAction<string[]>>;
+    partialResponse: string;
 }
 
 const ConversationContext = createContext<ConversationContextType | undefined>(undefined);
@@ -19,24 +24,24 @@ const ConversationContext = createContext<ConversationContextType | undefined>(u
  * @returns {JSX.Element} El proveedor de contexto.
  */
 export const ConversationProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
-    const [questions, setQuestions] = useState<string[]>([
-        "¿Alguna vez has sentido que no mereces tus logros?",
-        "¿Te preocupa que otros descubran que no eres tan competente como piensan?",
-        "¿Atribuyes tus éxitos a la suerte o a factores externos?"
+    const [messages, setMessages] = useState<Message[]>([]);
+    const [questions] = useState<string[]>([
+        "¿Qué es el Síndrome del Impostor?",
+        "¿Cómo afecta el Síndrome del Impostor en el trabajo?",
+        "¿Cuáles son algunas estrategias para superar el Síndrome del Impostor?"
     ]);
-    const [messages, setMessages] = useState<{ role: string; content: string }[]>([]);
 
     /**
      * Agrega un mensaje al estado de mensajes.
      * @param {string} role - El rol del mensaje (ej. 'user', 'bot').
      * @param {string} content - El contenido del mensaje.
      */
-    const addMessage = (role: string, content: string) => {
+    const addMessage = (role: 'user' | 'assistant', content: string) => {
         setMessages(prevMessages => [...prevMessages, { role, content }]);
     };
 
     return (
-        <ConversationContext.Provider value={{ questions, messages, addMessage, setQuestions }}>
+        <ConversationContext.Provider value={{ messages, addMessage, questions }}>
             {children}
         </ConversationContext.Provider>
     );
