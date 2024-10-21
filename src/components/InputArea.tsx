@@ -80,7 +80,7 @@ export const InputArea: React.FC<InputAreaProps> = ({ input, setInput, handleQue
                     {loading ? <Loader2 className="animate-spin" /> : <Send size={18} />}
                 </button>
             </div>
-            <div className="mt-4 flex justify-between items-center">
+            {/* <div className="mt-4 flex justify-between items-center">
                 <button className="text-green-500 text-sm font-medium flex items-center space-x-1 hover:text-green-600 transition duration-300">
                     <span>Topics</span>
                     <ChevronDown size={16} />
@@ -88,7 +88,7 @@ export const InputArea: React.FC<InputAreaProps> = ({ input, setInput, handleQue
                 <button className="text-gray-400 text-sm hover:text-gray-600 transition duration-300">
                     Show more
                 </button>
-            </div>
+            </div> */}
         </div>
     );
 };
