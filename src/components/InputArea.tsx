@@ -1,6 +1,6 @@
-import { Loader2, Send, ChevronDown } from "lucide-react";
+import { Loader2, Send } from "lucide-react";
 import { useState, useEffect } from "react";
-import { useQuestionHandler } from "../hooks/useQuestionHandler";
+
 
 /**
  * @typedef {Object} InputAreaProps
@@ -80,7 +80,8 @@ export const InputArea: React.FC<InputAreaProps> = ({ input, setInput, handleQue
                     {loading ? <Loader2 className="animate-spin" /> : <Send size={18} />}
                 </button>
             </div>
-            <div className="mt-4 flex justify-center items-center">
+            <div className="mt-4 flex justify-start items-center">
+                <img src="/mariana.jpg" alt="Avatar" className="w-8 h-8 rounded-full mr-2" />
                 <a target="_blank" href="https://www.linkedin.com/in/mariannarolfo/" className="text-gray-400 text-sm hover:text-gray-600 transition duration-300">
                     @MarianaRolfo
                 </a>
