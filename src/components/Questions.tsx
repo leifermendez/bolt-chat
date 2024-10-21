@@ -8,7 +8,7 @@ export const ParseLink = (text: string) => {
     const mentionRegex = /@MarianaRolfo/g;
     return text
         .replace(urlRegex, '<a href="$1">$1</a>')
-        .replace(mentionRegex, '<a target="_blank" class="text-blue-500" href="https://twitter.com/MarianaRolfo">@MarianaRolfo</a>');
+        .replace(mentionRegex, '<a target="_blank" class="text-blue-500" href="https://www.linkedin.com/in/mariannarolfo/">@MarianaRolfo</a>');
 }
 /**
  * Questions component that displays a list of predefined questions.
