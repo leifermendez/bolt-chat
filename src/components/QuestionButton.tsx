@@ -3,7 +3,7 @@ import React from "react";
 
 export const QuestionButton: React.FC<{ question: string; onClick: () => void; disabled: boolean }> = ({ question, onClick, disabled }) => (
     <motion.button
-        className={`bg-white text-gray-700 px-4 py-2 rounded-full text-sm font-medium shadow-sm hover:bg-gray-50 transition duration-300 ${disabled ? 'opacity-50 cursor-not-allowed' : ''}`}
+        className={`bg-white font-semibold text-gray-700 px-4 py-2 rounded-full text-sm  shadow-sm hover:bg-gray-50 transition duration-300 ${disabled ? 'opacity-50 cursor-not-allowed' : ''}`}
         whileHover={{ scale: 1.05 }}
         whileTap={{ scale: 0.95 }}
         onClick={onClick}

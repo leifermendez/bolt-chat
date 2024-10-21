@@ -26,7 +26,7 @@ interface BubbleCircleProps {
 export const BubbleCircle: React.FC<BubbleCircleProps> = ({ mode, text, ended, partialResponse }) => {
     const controls = useAnimation();
     const { submitText, error, audioUrl } = useAudioSubmit();
-    const [_, setAudio] = useState<HTMLAudioElement | null>(null);
+    const [audio, setAudio] = useState<HTMLAudioElement | null>(null);
     const [isPlaying, setIsPlaying] = useState(false);
 
     useEffect(() => {
@@ -53,18 +53,37 @@ export const BubbleCircle: React.FC<BubbleCircleProps> = ({ mode, text, ended, p
 
     useEffect(() => {
         if (audioUrl) {
-            const newAudio = new Audio(audioUrl);
-            setAudio(newAudio);
-            newAudio.play();
-            setIsPlaying(true);
+            if (audio) {
+                // Detener el audio si está reproduciendo
+                if (isPlaying) {
+                    audio.pause();
+                    setIsPlaying(false);
+                }
+                // Actualizar el src del objeto Audio existente
+                audio.src = audioUrl;
+            } else {
+                // Crear un nuevo objeto Audio si no existe
+                const newAudio = new Audio(audioUrl);
+                setAudio(newAudio);
+            }
 
-            newAudio.onended = () => setIsPlaying(false);
+            // Reproducir el audio
+            audio?.play().then(() => {
+                setIsPlaying(true);
+            }).catch(error => {
+                console.error("Error playing audio:", error);
+            });
         }
-    }, [audioUrl]);
+    }, [audioUrl, audio]);
+
+    useEffect(() => {
+        if (audio) {
+            audio.onended = () => setIsPlaying(false);
+        }
+    }, [audio]);
 
     return (
         <>
-
             <div className="mb-8 flex justify-center items-center">
                 <div className="relative">
                     <motion.div
@@ -77,6 +96,9 @@ export const BubbleCircle: React.FC<BubbleCircleProps> = ({ mode, text, ended, p
                             duration: mode === 'smooth' ? 2 : 1.5,
                             repeat: Infinity,
                             ease: "easeInOut",
+                            // Add these lines
+                            type: "tween",
+                            times: [0, 0.5, 1],
                         }}
                     >
                         <motion.div
@@ -88,6 +110,9 @@ export const BubbleCircle: React.FC<BubbleCircleProps> = ({ mode, text, ended, p
                                 duration: 2,
                                 repeat: Infinity,
                                 ease: "easeInOut",
+                                // Add these lines
+                                type: "tween",
+                                times: [0, 0.5, 1],
                             } : undefined}
                         >
                             <motion.div
@@ -99,6 +124,9 @@ export const BubbleCircle: React.FC<BubbleCircleProps> = ({ mode, text, ended, p
                                     duration: mode === 'smooth' ? 2 : 1.5,
                                     repeat: Infinity,
                                     ease: "easeInOut",
+                                    // Add these lines
+                                    type: "tween",
+                                    times: [0, 0.5, 1],
                                 }}
                             />
                         </motion.div>
