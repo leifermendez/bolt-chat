@@ -10,7 +10,7 @@ import { useQuestionHandler } from './hooks/useQuestionHandler';
 export const QuestionsExpanded = ({ isExpanded, input, setInput }: { isExpanded: boolean, input: string, setInput: React.Dispatch<React.SetStateAction<string>> }) => {
   const { handleQuestionSubmit, loading, partialResponse, question, endedResponse } = useQuestionHandler();
   return (
-    <>
+    <div className="flex flex-col justify-between h-[calc(100vh-60px)] md:h-auto">
       {isExpanded && <Questions
         question={question}
         handleQuestionSubmit={handleQuestionSubmit}
@@ -24,7 +24,7 @@ export const QuestionsExpanded = ({ isExpanded, input, setInput }: { isExpanded:
         input={input}
         setInput={setInput}
       />
-    </>
+    </div>
   );
 };
 /**
@@ -46,14 +46,14 @@ function App() {
     <LoadingProvider>
       <ConversationProvider>
         <motion.div
-          className="min-h-screen flex items-center justify-center p-4 animated-bg"
+          className="min-h-screen flex md:items-center justify-center p-0 md:p-4 animated-bg"
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           exit={{ opacity: 0 }}
           transition={{ duration: 0.5 }}
         >
           <motion.div
-            className="bg-white rounded-3xl shadow-xl w-full max-w-lg overflow-hidden"
+            className="bg-white md:rounded-3xl shadow-xl w-full max-w-lg overflow-hidden"
             initial={{ height: "200px" }}
             animate={{ height: isExpanded ? "auto" : "200px" }}
             transition={{ duration: 0.5, ease: "easeInOut" }}

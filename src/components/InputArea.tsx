@@ -62,7 +62,7 @@ export const InputArea: React.FC<InputAreaProps> = ({ input, setInput, handleQue
     };
 
     return (
-        <div className="p-4 bg-white border-t border-gray-200">
+        <div className="p-4  border-t border-gray-200">
             <div className="flex items-center space-x-2 bg-gray-100 rounded-full p-1">
                 <input
                     type="text"
